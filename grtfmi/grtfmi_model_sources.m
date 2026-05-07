@@ -49,10 +49,15 @@ for i = 1:numel(sfcns)
         makeInfo = rtwmakecfg();
         cd(start_dir);
 
-        include          = [include          makeInfo.includePath]; %#ok<AGROW>
-        sfun_source_dirs = [sfun_source_dirs makeInfo.sourcePath];  %#ok<AGROW>
-        
+        if isfield(makeInfo, 'includePath')
+            include = [include makeInfo.includePath]; %#ok<AGROW>
+        end
+        if isfield(makeInfo, 'sourcePath')
+            sfun_source_dirs = [sfun_source_dirs makeInfo.sourcePath]; %#ok<AGROW>
+        end
+
         % add S-function sources
+        if isfield(makeInfo, 'sources')
         for j = 1:numel(makeInfo.sources)
             for k = 1:numel(sfun_source_dirs)
                 source_file = fullfile(sfun_source_dirs{k}, makeInfo.sources{j});
@@ -61,6 +66,7 @@ for i = 1:numel(sfcns)
                     break
                 end
             end
+        end
         end
         
         if isfield(makeInfo, 'library')
